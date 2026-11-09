@@ -29,51 +29,50 @@ ORDER BY mes;
 
 WITH recencia AS (
     SELECT
+        c.customer_id,
         MAX(o.order_purchase_timestamp) AS ultima_compra,
-        CURRENT_DATE - DATE(MAX(o.order_purchase_timestamp)) AS dias_desde_ultima
+        CURRENT_DATE - DATE(MAX(o.order_purchase_timestamp)) AS recencia_dias
     FROM customers c
-    JOIN orders o 
-    ON c.customer_id = o.customer_id
-    GROUP BY c.customer_id;
+    JOIN orders o ON c.customer_id = o.customer_id
+    GROUP BY c.customer_id
 ),
 frequencia AS (
-    SELECT 
-        c.customers,
-        COUNT(o.order_id) AS qnt_pedidos
-    FROM customers c 
-    JOIN orders o 
-    ON c.customer_id = o.customer_id
+    SELECT
+        c.customer_id,
+        COUNT(o.order_id) AS qtd_pedidos
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
     GROUP BY c.customer_id
 ),
 monetario AS (
-    SELECT 
+    SELECT
         c.customer_id,
         SUM(oi.price) AS valor_total
-    FROM customers c 
-    JOIN orders o 
-    ON c.customer_id = o.customer_id
-    JOIN order_items oi
-    ON o.order_id = oi.order_id
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    JOIN order_items oi ON o.order_id = oi.order_id
+    GROUP BY c.customer_id
 )
 
-SELECT r.customer_id,
-    r.dias_desde_ultima,
-    f.qnt_pedidos,
+SELECT 
+    r.customer_id,
+    r.recencia_dias,
+    f.qtd_pedidos,
     m.valor_total,
-    NTILE(4) OVER (ORDER BY r.dias_desde_ultima DESC) AS recencia_quartil,
-    NTILE(4) OVER (ORDER BY f.qnt_pedidos ASC) AS frequencia_quartil,
-    NTILE(4) OVER (ORDER BY m.valor_total DESC) AS monetario_quartil,
-    CASE 
-        WHEN NTILE(4) OVER (ORDER BY r.dias_desde_ultima DESC) = 1
-        AND NTILE(4) OVER (ORDER BY f.qnt_pedidos ASC) = 4
-        AND NTILE(4) OVER (ORDER BY m.valor_total DESC) = 4
-        THEN 'Best'
+    NTILE(4) OVER (ORDER BY r.recencia_dias DESC) AS recencia_quartil,
+    NTILE(4) OVER (ORDER BY f.qtd_pedidos ASC) AS frequencia_quartil,
+    NTILE(4) OVER (ORDER BY m.valor_total ASC) AS monetario_quartil,
+    CASE
+        WHEN NTILE(4) OVER (ORDER BY r.recencia_dias ASC) = 1
+        AND  NTILE(4) OVER (ORDER BY f.qtd_pedidos DESC) = 4
+        AND  NTILE(4) OVER (ORDER BY m.valor_total DESC) = 4
+        THEN 'Best' 
         ELSE 'Other'
     END AS segmento
-FROM recencia r 
+FROM recencia r
 JOIN frequencia f ON r.customer_id = f.customer_id
 JOIN monetario m ON r.customer_id = m.customer_id
-ORDER BY valor_total DESC
+ORDER BY segmento, valor_total DESC
 LIMIT 20;
 
 --Receita por Categoria com Avaliação-- 
