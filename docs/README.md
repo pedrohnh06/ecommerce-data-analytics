@@ -1,16 +1,3 @@
-# E‑commerce Data Analytics (Olist)
+# Documentação do Projeto
 
-## Visão geral
-Projeto de exploração e análise de dados de um e‑commerce real (dataset Olist).
-
-## Etapas concluídas
-1️⃣ Exploração do esquema (tabelas, chaves, cardinalidade)  
-2️⃣ Queries de insights iniciais:
-- Receita por categoria
-- Receita mensal
-- RFM (recência, frequência, valor)
-- Avaliação média por categoria
-
-## Próximos passos
-- RFM completo (segmentação e visualização)
-- Coh## Onde você está agora
+A documentação principal e detalhada do projeto encontra-se no [README.md principal](../README.md).
