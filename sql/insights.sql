@@ -194,3 +194,62 @@ JOIN customers c ON c.customer_id = t.customer_id
 GROUP BY 
     c.customer_state
 ORDER BY taxa_atraso DESC;
+
+-- Análise de Sellers (Parte 1: Geografia de Origem) --
+
+SELECT
+    s.seller_state,
+    SUM(oi.price) AS receita_total,
+    COUNT(DISTINCT s.seller_id) AS qtd_vendedores,
+    ROUND(100.0 * SUM(oi.price) / SUM(SUM(oi.price)) OVER(), 2) AS percentual_receita
+FROM sellers s
+JOIN order_items oi ON s.seller_id = oi.seller_id
+JOIN orders o ON o.order_id = oi.order_id
+WHERE o.order_status = 'delivered'
+GROUP BY s.seller_state
+ORDER BY receita_total DESC;
+
+-- Curva ABC de Vendedores (Parte 2: Princípio de Pareto) -- 
+
+WITH agrupamento_receita_vendedor AS (
+    SELECT 
+        s.seller_id,
+        SUM(oi.price) AS receita_seller
+    FROM sellers s
+    JOIN order_items oi ON oi.seller_id = s.seller_id
+    GROUP BY s.seller_id
+),
+receita_percentual_acumulado AS (
+    SELECT
+        ag.seller_id,
+        ag.receita_seller,
+        SUM(ag.receita_seller) OVER (ORDER BY ag.receita_seller DESC) AS receita_acumulada,
+        ROUND(100.0 * SUM(ag.receita_seller) OVER (ORDER BY ag.receita_seller DESC) / SUM(ag.receita_seller) OVER (), 2) AS pct_acumulado
+    FROM agrupamento_receita_vendedor ag
+    ORDER BY pct_acumulado
+),
+tabela_classificacao_ABC AS (
+    SELECT
+        seller_id,
+        CASE
+            WHEN rpa.pct_acumulado <= 80
+            THEN 'A' 
+
+            WHEN rpa.pct_acumulado <= 95
+            THEN 'B' 
+
+            ELSE 'C'
+        END AS classificacao_ABC
+    FROM receita_percentual_acumulado rpa
+    ORDER BY classificacao_ABC ASC
+)
+SELECT
+    t.classificacao_ABC,
+    COUNT(*) AS qtd_vendedores,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_vendedores, 
+    ROUND(SUM(ag.receita_seller), 2) AS receita_total,
+    ROUND(100.0 * SUM(receita_seller) / SUM(SUM(receita_seller)) OVER (), 2) AS pct_receita
+FROM tabela_classificacao_ABC t
+JOIN agrupamento_receita_vendedor ag ON ag.seller_id = t.seller_id
+GROUP BY t.classificacao_ABC
+ORDER BY t.classificacao_ABC ASC;

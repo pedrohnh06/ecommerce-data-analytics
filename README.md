@@ -28,7 +28,8 @@ ecommerce-data-analytics/
 ├── notebooks/             # Laboratório de exploração e visualizações
 │   └── 01_exploracao.ipynb
 ├── docs/                  # Documentações auxiliares
-├── insights.sql           # Queries analíticas estruturadas em PostgreSQL
+├── sql/                   # Queries analíticas estruturadas em PostgreSQL
+│   └── insights.sql
 ├── .env.example           # Template de variáveis de ambiente
 ├── .gitignore             # Arquivos e diretórios ignorados pelo Git
 ├── requirements.txt       # Dependências do projeto Python
@@ -65,6 +66,14 @@ ecommerce-data-analytics/
 ### 5. Diagnóstico Geográfico de Entregas
 - Os estados das regiões **Norte e Nordeste (ex: AL, MA, AP, SE, CE)** lideram o ranking de taxa de atraso e tempo médio de entrega.
 - Esse cenário é decorrente da concentração massiva dos vendedores (*sellers*) e centros de distribuição nas regiões Sul e Sudeste, exigindo malha de transporte de longa distância.
+
+### 6. Marketplace e Curva ABC de Vendedores (Princípio de Pareto)
+- **Concentração Geográfica de Origem**: Mais de **91,9%** da receita dos vendedores é originada no Sul e Sudeste (com **São Paulo concentrando 64,4%** do faturamento e 57,2% dos vendedores sozinho), o que fundamenta o gargalo logístico para o Norte/Nordeste.
+- **Princípio de Pareto (80/20)**:
+  - **Classe A**: Apenas **17,5%** dos vendedores geram **80,0%** de todo o faturamento da plataforma (~R$ 10,87 milhões).
+  - **Classe B**: **24,7%** dos vendedores geram **15,0%** da receita.
+  - **Classe C (Cauda Longa)**: **57,8%** dos vendedores (mais da metade da base de parceiros) respondem por apenas **5,0%** da receita total.
+
 
 ---
 
@@ -135,5 +144,5 @@ ecommerce-data-analytics/
 - [x] Análise logística de SLA e impacto no CSAT
 - [x] Diagnóstico geográfico de entregas por estado (UF)
 - [ ] Análise de Cohort (Retenção ao longo do tempo)
-- [ ] Análise de Marketplace e Concentração de Vendedores (Curva ABC / Pareto)
+- [x] Análise de Marketplace e Concentração de Vendedores (Curva ABC / Pareto)
 - [ ] Desenvolvimento de Dashboard Interativo no Power BI
