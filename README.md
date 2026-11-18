@@ -74,6 +74,12 @@ ecommerce-data-analytics/
   - **Classe B**: **24,7%** dos vendedores geram **15,0%** da receita.
   - **Classe C (Cauda Longa)**: **57,8%** dos vendedores (mais da metade da base de parceiros) respondem por apenas **5,0%** da receita total.
 
+### 7. Análise de Cohort e Retenção (O Efeito "Balde Furado")
+- **Retenção Praticamente Nula**: A taxa média de retorno no Mês 1 (a partir de 2017) é de apenas **0,48%**, com média histórica de recompra de **0,23%**.
+- **Pico Máximo de Retenção**: Desconsiderando a anomalia amostral do mês piloto (Dezembro/2016 com apenas 1 cliente), em nenhum momento a retenção superou **0,72%**, comprovando que mais de 99% dos clientes realizam uma única compra.
+- **Diagnóstico Estratégico**: A Olist atua como canal transacional em marketplaces terceiros (o consumidor compra no Mercado Livre/B2W e não cria vínculo com a Olist), exigindo aquisição permanente de novos usuários para manter a receita.
+
+
 
 ---
 
@@ -143,6 +149,6 @@ ecommerce-data-analytics/
 - [x] Segmentação de clientes com modelo RFM
 - [x] Análise logística de SLA e impacto no CSAT
 - [x] Diagnóstico geográfico de entregas por estado (UF)
-- [ ] Análise de Cohort (Retenção ao longo do tempo)
+- [x] Análise de Cohort (Retenção ao longo do tempo)
 - [x] Análise de Marketplace e Concentração de Vendedores (Curva ABC / Pareto)
 - [ ] Desenvolvimento de Dashboard Interativo no Power BI

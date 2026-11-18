@@ -253,3 +253,27 @@ FROM tabela_classificacao_ABC t
 JOIN agrupamento_receita_vendedor ag ON ag.seller_id = t.seller_id
 GROUP BY t.classificacao_ABC
 ORDER BY t.classificacao_ABC ASC;
+
+-- Análise de Cohort (Retenção por Safras Mensais) --
+
+WITH dados_compras AS (
+    SELECT
+        c.customer_unique_id,
+        DATE_TRUNC('month', o.order_purchase_timestamp) AS mes_compra,
+        MIN(DATE_TRUNC('month', o.order_purchase_timestamp)) OVER (PARTITION BY c.customer_unique_id) AS mes_primeira_compra
+    FROM orders o
+    JOIN customers c ON c.customer_id = o.customer_id
+    WHERE order_status = 'delivered'
+)
+SELECT
+    mes_primeira_compra,
+    (EXTRACT(YEAR FROM mes_compra) - EXTRACT(YEAR FROM mes_primeira_compra)) * 12 + 
+    (EXTRACT(MONTH FROM mes_compra) - EXTRACT(MONTH FROM mes_primeira_compra)) AS cohort_index,
+    COUNT(DISTINCT customer_unique_id) AS total_clientes
+FROM dados_compras 
+GROUP BY 
+    mes_primeira_compra, 
+    cohort_index
+ORDER BY 
+    mes_primeira_compra,
+    cohort_index;
